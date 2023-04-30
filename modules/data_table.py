@@ -6,7 +6,8 @@ DATA_COLUMNS_EU = {
     "mass": "mass",
     "mass_sini": "mass_sini",
     "radius": "radius",
-    "period": "orbital_period"
+    "period": "orbital_period",
+    "det_type": "detection_type"
 }
 
 
