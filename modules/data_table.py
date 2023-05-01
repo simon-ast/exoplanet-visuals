@@ -41,4 +41,14 @@ def read_exoplanet_eu(filename: str) -> pd.DataFrame:
     for key in DATA_COLUMNS_EU.keys():
         exoplanet_data[key] = raw_data[DATA_COLUMNS_EU[key]]
 
+    # Todo: This is still very crude
+    print("\n DROPPING ALL PLANETS WITH RADII < 1e-3"
+          "\n DROPPING ALL PLANETS WITH PERIODS > 1e6\n\n")
+    exoplanet_data = exoplanet_data[
+        exoplanet_data.radius >= 1e-3
+    ]
+    exoplanet_data = exoplanet_data[
+        exoplanet_data.period < 1e6
+        ]
+
     return exoplanet_data

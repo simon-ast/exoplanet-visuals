@@ -1,11 +1,177 @@
 import os
-import matplotlib.pyplot as plt
+import typing as tp
 import imageio
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 import pandas as pd
 
 
 # GLOBAL
 GIF_SAVE_DIR = "plots/animated"
+FRAME_SAVE_TOP = "plots"
+
+
+def plot_wrap(exoplanet_data: pd.DataFrame) -> None:
+    """Total wrapper for individual frames"""
+    # Set minimum and maximum year value from data frame
+    min_year = int(exoplanet_data.discovered.min())
+    max_year = int(exoplanet_data.discovered.max())
+
+    # Iterate over each year
+    curr_year = min_year
+    while curr_year <= max_year:
+        plot_mass_radius(exoplanet_data, curr_year)
+        plot_radius_period(exoplanet_data, curr_year)
+
+        # Increment current year
+        curr_year += 1
+
+    plot_current_relations(exoplanet_data)
+
+    return None
+
+
+def plot_current_relations(exoplanet_data: pd.DataFrame) -> None:
+    """Multiplot of exoplanet data"""
+    # Local parameters
+    save_dir = f"{FRAME_SAVE_TOP}"
+    mass_min, mass_max = data_range(exoplanet_data.mass)
+    rad_min, rad_max = data_range(exoplanet_data.radius)
+    per_min, per_max = data_range(exoplanet_data.period)
+
+    # Instantiate figure
+    fig, (ax_mr, ax_rp) = plt.subplots(ncols=2, figsize=(12, 6))
+    ax_mr.set(
+        xlim=(mass_min * 0.9, mass_max * 1.1), xscale="log",
+        xlabel="Planetary mass [M$_\\mathrm{J}$]",
+        ylim=(rad_min * 0.9, rad_max * 1.1), yscale="log",
+        ylabel="Planetary radius [R$_\\mathrm{J}$]"
+    )
+    ax_rp.set(
+        xlim=(rad_min * 0.9, rad_max * 1.1), xscale="log",
+        xlabel="Planetary radius [R$_\\mathrm{J}$]",
+        ylim=(per_min * 0.9, per_max * 1.1), yscale="log",
+        ylabel="Orbital period [d]"
+    )
+
+    # Plot parameters
+    ax_mr.scatter(exoplanet_data.mass, exoplanet_data.radius, alpha=0.3)
+    ax_rp.scatter(exoplanet_data.radius, exoplanet_data.period, alpha=0.3)
+    plt.tight_layout()
+
+    plt.savefig(f"{save_dir}/exoplanet_parameters.png")
+    plt.close()
+    return None
+
+
+def plot_mass_radius(exoplanet_data: pd.DataFrame,
+                     current_year: int) -> None:
+    """
+    Generate mass-radius plot for all exoplanets discovered until
+    'current_year'
+    """
+    # Set-up recurring variables
+    frame_save_dir = f"{FRAME_SAVE_TOP}/mass_radius_frames"
+    mass_min, mass_max = data_range(exoplanet_data.mass)
+    rad_min, rad_max = data_range(exoplanet_data.radius)
+
+    # Instantiate plot
+    fig, ax = plt.subplots()
+    ax.set(
+        xlim=(mass_min * 0.9, mass_max * 1.1), xscale="log",
+        xlabel="Planetary mass [M$_\\mathrm{J}$]",
+        ylim=(rad_min * 0.9, rad_max * 1.1), yscale="log",
+        ylabel="Planetary radius [R$_\\mathrm{J}$]",
+        title=f"{current_year}"
+    )
+
+    # Select sub-frame based on maximum year
+    plot_data = exoplanet_data.copy(deep=True)
+    temp_data = plot_data.loc[
+        plot_data.discovered <= current_year
+    ]
+
+    # Plot Mass-Radius data with opacity
+    ax.scatter(temp_data.mass, temp_data.radius, alpha=0.3)
+    plt.tight_layout()
+
+    # Save as individual frame
+    frame_name = f"mr_{current_year}"
+    plt.savefig(f"{frame_save_dir}/{frame_name}.png")
+    plt.close()
+
+    return None
+
+
+def plot_radius_period(exoplanet_data: pd.DataFrame,
+                       current_year: int) -> None:
+    """
+    Generate mass-radius plot for all exoplanets discovered until
+    'current_year'
+    """
+    # Set-up recurring variables
+    frame_save_dir = f"{FRAME_SAVE_TOP}/radius_period_frames"
+    rad_min, rad_max = data_range(exoplanet_data.radius)
+    per_min, per_max = data_range(exoplanet_data.period)
+
+    # Instantiate plot
+    fig, ax = plt.subplots()
+    ax.set(
+        xlim=(rad_min * 0.9, rad_max * 1.1), xscale="log",
+        xlabel="Planetary radius [R$_\\mathrm{J}$]",
+        ylim=(per_min * 0.9, per_max * 1.1), yscale="log",
+        ylabel="Orbital period [d]",
+        title=f"{current_year}"
+    )
+
+    # Select sub-frame based on maximum year
+    plot_data = exoplanet_data.copy(deep=True)
+    temp_data = plot_data.loc[
+        plot_data.discovered <= current_year
+    ]
+
+    # Plot Mass-Radius data with opacity
+    ax.scatter(temp_data.radius, temp_data.period, alpha=0.3)
+    plt.tight_layout()
+
+    # Save as individual frame
+    frame_name = f"rp_{current_year}"
+    plt.savefig(f"{frame_save_dir}/{frame_name}.png")
+    plt.close()
+
+    return None
+
+
+def data_range(exoplanet_data_series: pd.Series) -> tp.Tuple:
+    """Utility - Read min/max value for plot bounds"""
+    # Read out minimum and maximum values for plot constraints
+    data_min = exoplanet_data_series.min()
+    data_max = exoplanet_data_series.max()
+
+    return data_min, data_max
+
+
+def rc_setup():
+    """Utility - Generalized plot attributes"""
+    mpl.rcParams["xtick.direction"] = "in"
+    mpl.rcParams["xtick.labelsize"] = "large"
+    mpl.rcParams["xtick.major.width"] = 1.5
+    mpl.rcParams["xtick.minor.width"] = 1.5
+    mpl.rcParams["xtick.minor.visible"] = "True"
+    mpl.rcParams["xtick.top"] = "True"
+
+    mpl.rcParams["ytick.direction"] = "in"
+    mpl.rcParams["ytick.labelsize"] = "large"
+    mpl.rcParams["ytick.major.width"] = 1.5
+    mpl.rcParams["ytick.minor.width"] = 1.5
+    mpl.rcParams["ytick.minor.visible"] = "True"
+    mpl.rcParams["ytick.right"] = "True"
+
+    mpl.rcParams["axes.grid"] = "False"
+    mpl.rcParams["axes.linewidth"] = 1.5
+    mpl.rcParams["axes.labelsize"] = "large"
+
+    mpl.rcParams["legend.frameon"] = "False"
 
 
 def create_looped_gif(folder_name: str,
@@ -26,38 +192,3 @@ def create_looped_gif(folder_name: str,
     )
 
     return None
-
-
-def plot_wrap(exoplanet_data: pd.DataFrame):
-    """DOC"""
-    plot_data = exoplanet_data.copy(deep=True)
-    plot_data = plot_data.loc[plot_data.radius > 1e-2]
-    plot_data = plot_data.loc[plot_data.period < 1e6]
-
-    # Frame out maximum plots bounds
-    min_radius = plot_data.radius.min()
-    max_radius = plot_data.radius.max()
-
-    min_mass = plot_data.mass.min()
-    max_mass = plot_data.mass.max()
-
-    min_year = int(plot_data.discovered.min())
-
-    max_year = min_year
-    while max_year <= 2023:
-        fig, ax = plt.subplots()
-        ax.set(xlim=(min_mass * 0.9, max_mass * 1.1), xscale="log",
-               ylim=(min_radius * 0.9, max_radius * 1.1), yscale="log",
-               title=f"{max_year}")
-
-        temp_data = plot_data.loc[
-            plot_data.discovered <= max_year
-        ]
-        ax.scatter(temp_data.mass, temp_data.radius, alpha=0.3)
-        ax.scatter(temp_data.mass_sini, temp_data.radius, alpha=0.3)
-
-        plt.savefig(f"plots/radius_period_frames/{max_year}.png")
-        plt.close()
-
-        max_year += 1
-
