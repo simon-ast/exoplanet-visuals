@@ -4,8 +4,8 @@ animations and loops). For now, the data set that is read in here comes
 from the [Extrasolar Planets Encyclopedia](http://exoplanet.eu/).
 
 <p align="center">
-      <img src="plots/animated/mass_radius.gif" align="left" width="50%">
-      <img src="plots/animated/radius_period.gif" align="right" width="50%">
+      <img src="plots/animated/mass_radius.gif" align="left" width="49%">
+      <img src="plots/animated/radius_period.gif" align="right" width="49%">
 </p>
 
 The current state of parameters looks like this:
