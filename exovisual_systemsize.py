@@ -11,7 +11,8 @@ import pyvo
 # GLOBALS
 CIRCLE_OFFSET = 0.5
 CENTER_SIZE = 5e4
-SYSTEM_NAME = "TOI-178"
+SYSTEM_NAME = "TRAPPIST-1"
+IMG_TYPE = "svg"
 
 
 def main():
@@ -35,7 +36,9 @@ def main():
     # Finish plot
     plt.tight_layout()
     plt.savefig(
-        f"plots/system_sizes/system_size_{SYSTEM_NAME.replace(' ','')}.svg")
+        f"plots/system_sizes/system_size_{SYSTEM_NAME.replace(' ','')}."
+        f"{IMG_TYPE}", dpi=600
+    )
 
 
 def nasa_epa_query(system_name: str) -> pd.DataFrame:

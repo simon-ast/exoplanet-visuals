@@ -48,15 +48,15 @@ def plot_current_relations(exoplanet_data: pd.DataFrame) -> None:
         ylabel="Planetary radius [R$_\\mathrm{J}$]"
     )
     ax_rp.set(
-        xlim=(rad_min * 0.9, rad_max * 1.1), xscale="log",
-        xlabel="Planetary radius [R$_\\mathrm{J}$]",
-        ylim=(per_min * 0.9, per_max * 1.1), yscale="log",
-        ylabel="Orbital period [d]"
+        ylim=(rad_min * 0.9, rad_max * 1.1), xscale="log",
+        ylabel="Planetary radius [R$_\\mathrm{J}$]",
+        xlim=(per_min * 0.9, per_max * 1.1), yscale="log",
+        xlabel="Orbital period [d]"
     )
 
     # Plot parameters
     ax_mr.scatter(exoplanet_data.mass, exoplanet_data.radius, alpha=0.3)
-    ax_rp.scatter(exoplanet_data.radius, exoplanet_data.period, alpha=0.3)
+    ax_rp.scatter(exoplanet_data.period, exoplanet_data.radius, alpha=0.3)
     plt.tight_layout()
 
     plt.savefig(f"{save_dir}/exoplanet_parameters.png")
@@ -64,8 +64,10 @@ def plot_current_relations(exoplanet_data: pd.DataFrame) -> None:
     return None
 
 
-def plot_mass_radius(exoplanet_data: pd.DataFrame,
-                     current_year: int) -> None:
+def plot_mass_radius(
+        exoplanet_data: pd.DataFrame,
+        current_year: int
+) -> None:
     """
     Generate mass-radius plot for all exoplanets discovered until
     'current_year'
@@ -103,8 +105,10 @@ def plot_mass_radius(exoplanet_data: pd.DataFrame,
     return None
 
 
-def plot_radius_period(exoplanet_data: pd.DataFrame,
-                       current_year: int) -> None:
+def plot_radius_period(
+        exoplanet_data: pd.DataFrame,
+        current_year: int
+) -> None:
     """
     Generate mass-radius plot for all exoplanets discovered until
     'current_year'
@@ -117,10 +121,10 @@ def plot_radius_period(exoplanet_data: pd.DataFrame,
     # Instantiate plot
     fig, ax = plt.subplots()
     ax.set(
-        xlim=(rad_min * 0.9, rad_max * 1.1), xscale="log",
-        xlabel="Planetary radius [R$_\\mathrm{J}$]",
-        ylim=(per_min * 0.9, per_max * 1.1), yscale="log",
-        ylabel="Orbital period [d]",
+        ylim=(rad_min * 0.9, rad_max * 1.1), yscale="log",
+        ylabel="Planetary radius [R$_\\mathrm{J}$]",
+        xlim=(per_min * 0.9, per_max * 1.1), xscale="log",
+        xlabel="Orbital period [d]",
         title=f"{current_year}"
     )
 
@@ -131,7 +135,7 @@ def plot_radius_period(exoplanet_data: pd.DataFrame,
     ]
 
     # Plot Mass-Radius data with opacity
-    ax.scatter(temp_data.radius, temp_data.period, alpha=0.3)
+    ax.scatter(temp_data.period, temp_data.radius, alpha=0.3)
     plt.tight_layout()
 
     # Save as individual frame
