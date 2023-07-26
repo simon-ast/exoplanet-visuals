@@ -10,8 +10,8 @@ import pyvo
 
 # GLOBALS
 CIRCLE_OFFSET = 0.5
-CENTER_SIZE = 5e4
-SYSTEM_NAME = "55 Cnc"
+CENTER_SIZE = 8e4
+SYSTEM_NAME = "TRAPPIST-1"
 IMG_TYPE = "svg"
 
 
@@ -123,7 +123,7 @@ class SystemParameters:
             temp_xlocs.append(temp_x)
 
         xlocs = np.array(temp_xlocs)
-        self.xlocs = xlocs + 1.3 + self.sizes[0]
+        self.xlocs = xlocs + 1 + CIRCLE_OFFSET + self.sizes[0]
 
 
 def set_figure(system_pars: SystemParameters):
@@ -138,7 +138,7 @@ def set_figure(system_pars: SystemParameters):
 
     # Draw figure
     figure, axis = plt.subplots(figsize=(fig_width, fig_height))
-    axis.set(xlim=(0, x_limit), ylim=(-1.5, 1.5))
+    axis.set(xlim=(0, x_limit), ylim=(-1.1, 1.1))
 
     return figure, axis
 
