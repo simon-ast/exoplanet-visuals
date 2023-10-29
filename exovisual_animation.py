@@ -4,7 +4,9 @@ import modules.plotting as pt
 
 def main():
     # Read in the data for plotting
-    data_table = dt.read_exoplanet_eu("data/exoplanet.eu_catalog.csv")
+    data_table = dt.read_exoplanet_eu(
+        "data/exoplanet.eu_catalog.csv"
+    )
     
     # Plot all designated relations
     pt.plot_wrap(data_table)

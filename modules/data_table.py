@@ -44,6 +44,7 @@ def read_exoplanet_eu(filename: str) -> pd.DataFrame:
     # Todo: This is still very crude
     print("\n DROPPING ALL PLANETS WITH RADII < 1e-3"
           "\n DROPPING ALL PLANETS WITH PERIODS > 1e6\n\n")
+    
     exoplanet_data = exoplanet_data[
         exoplanet_data.radius >= 1e-3
     ]
